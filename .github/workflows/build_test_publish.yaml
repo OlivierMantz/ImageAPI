@@ -36,10 +36,10 @@ jobs:
                   dotnet-version: "7.0.x"
 
             - name: Restore Dependencies
-              run: dotnet restore "./BackEnd/BackEnd.csproj"
+              run: dotnet restore "./ImageAPI/ImageAPI.csproj"
 
             - name: Restore Test Dependencies
-              run: dotnet restore "./BackEndTests/BackEndTests.csproj"
+              run: dotnet restore "./ImageAPITests/ImageAPITests.csproj"
 
             - name: Build
               run: dotnet build --configuration Release --no-restore
@@ -49,8 +49,8 @@ jobs:
               with:
                   name: built-app
                   path: |
-                      BackEnd/bin/Release/net7.0/
-                      BackEndTests/bin/Release/net7.0/
+                      ImageAPI/bin/Release/net7.0/
+                      ImageAPITests/bin/Release/net7.0/
 
     test:
         needs: build
@@ -71,7 +71,7 @@ jobs:
                   path: .
             - name: Test
               run: |
-                  dotnet test "./BackEndTests/bin/Release/net7.0/BackEndTests.dll" --no-build --verbosity normal
+                  dotnet test "./ImageAPI/bin/Release/net7.0/ImageAPITests.dll" --no-build --verbosity normal
 
     publish_to_dockerhub:
         needs: [test]
@@ -92,4 +92,4 @@ jobs:
                   context: .
                   file: ./Dockerfile
                   push: true
-                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/user_api:latest
+                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/image_api:latest
