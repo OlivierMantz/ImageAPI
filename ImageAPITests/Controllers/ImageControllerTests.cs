@@ -12,7 +12,6 @@ namespace ImageAPITests.Controllers.Tests
 {
     public class ImageControllerTests
     {
-
         [Fact()]
         public async Task Upload()
         {
