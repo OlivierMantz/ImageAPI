@@ -6,5 +6,7 @@
         public string? AccountKey { get; set; }
         public string? ImageContainer { get; set; }
         public string? ThumbnailContainer { get; set; }
+        public string? SAS_Token { get; set; }
+
     }
 }

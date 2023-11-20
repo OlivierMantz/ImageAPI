@@ -8,11 +8,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Core;
+using Azure.Identity;
+using Azure.Storage.Sas;
+
 
 namespace ImageAPI.Helpers
 {
     public static class StorageHelper
     {
+
 
         public static bool IsImage(IFormFile file)
         {
@@ -29,14 +34,12 @@ namespace ImageAPI.Helpers
         public static async Task<bool> UploadFileToStorage(Stream fileStream, string fileName, AzureStorageConfig _storageConfig)
         {
             // Create a URI to the blob
-            Uri blobUri = new Uri("https://" +
-                                  _storageConfig.AccountName +
-                                  ".blob.core.windows.net/" +
-                                  _storageConfig.ImageContainer +
-                                  "/" + fileName);
+            Uri blobUri = new Uri($"https://{_storageConfig.AccountName}.blob.core.windows.net/{_storageConfig.ImageContainer}/{fileName}");
 
             // Create StorageSharedKeyCredentials object by reading
             // the values from the configuration (appsettings.json)
+
+
             StorageSharedKeyCredential storageCredentials = new StorageSharedKeyCredential(_storageConfig.AccountName, _storageConfig.AccountKey);
 
             // Create the blob client.
@@ -52,24 +55,56 @@ namespace ImageAPI.Helpers
         {
             List<string> thumbnailUrls = new List<string>();
 
-            // Create a URI to the storage account
-            Uri accountUri = new Uri("https://" + _storageConfig.AccountName + ".blob.core.windows.net/");
+            //// Create a URI to the storage account
+            //Uri accountUri = new Uri($"https://{_storageConfig.AccountName}.blob.core.windows.net/{_storageConfig.SAS_Token}/");
 
-            // Create BlobServiceClient from the account URI
-            BlobServiceClient blobServiceClient = new BlobServiceClient(accountUri);
+            //StorageSharedKeyCredential storageCredentials = new StorageSharedKeyCredential(_storageConfig.AccountName, _storageConfig.AccountKey);
+
+
+            //// Create BlobServiceClient from the account URI
+            //BlobServiceClient blobServiceClient = new BlobServiceClient(accountUri);
+
+            //// Get reference to the container
+            //BlobContainerClient container = blobServiceClient.GetBlobContainerClient(_storageConfig.ThumbnailContainer);
+
+            //if (container.Exists())
+            //{
+            //    foreach (BlobItem blobItem in container.GetBlobs())
+            //    {
+            //        thumbnailUrls.Add($"{container.Uri}/{blobItem.Name}");
+            //    }
+            //}
+
+            //return await Task.FromResult(thumbnailUrls);
+
+            BlobServiceClient blobServiceClient = new BlobServiceClient(new Uri($"https://{_storageConfig.AccountName}.blob.core.windows.net"), new StorageSharedKeyCredential(_storageConfig.AccountName, _storageConfig.AccountKey));
 
             // Get reference to the container
             BlobContainerClient container = blobServiceClient.GetBlobContainerClient(_storageConfig.ThumbnailContainer);
 
             if (container.Exists())
             {
+                // Define the resource types and permissions for the SAS
+                BlobSasBuilder sasBuilder = new BlobSasBuilder()
+                {
+                    BlobContainerName = _storageConfig.ThumbnailContainer,
+                    Resource = "c",  // 'c' for container
+                    StartsOn = DateTimeOffset.UtcNow,
+                    ExpiresOn = DateTimeOffset.UtcNow.AddHours(1)  // 1 hour expiry time
+                };
+                sasBuilder.SetPermissions(BlobContainerSasPermissions.Read);
+
+                // Generate SAS token
+                string sasToken = sasBuilder.ToSasQueryParameters(new StorageSharedKeyCredential(_storageConfig.AccountName, _storageConfig.AccountKey)).ToString();
+
                 foreach (BlobItem blobItem in container.GetBlobs())
                 {
-                    thumbnailUrls.Add(container.Uri + "/" + blobItem.Name);
+                    thumbnailUrls.Add($"{container.Uri}/{blobItem.Name}?{sasToken}");
                 }
             }
 
             return await Task.FromResult(thumbnailUrls);
+
         }
     }
 }

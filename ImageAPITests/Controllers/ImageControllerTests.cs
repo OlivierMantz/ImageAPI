@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using Moq;
+using Azure.Storage.Blobs;
 
 namespace ImageAPITests.Controllers.Tests
 {

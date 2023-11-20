@@ -1,5 +1,6 @@
 
 using ImageAPI.Interfaces;
+using ImageAPI.Models;
 
 namespace ImageAPI
 {
@@ -16,6 +17,7 @@ namespace ImageAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<IFileUploader, AzureFileUploader>();
+            builder.Services.Configure<AzureStorageConfig>(builder.Configuration.GetSection("AzureStorageConfig"));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
