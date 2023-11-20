@@ -9,6 +9,9 @@
 *.user
 *.userosscache
 *.sln.docstates
+.env
+ImageAPI/appsettings.json
+ImageAPI/appsettings.Development.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -361,3 +364,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/ImageAPI/appsettings.Development.json
+/ImageAPI/appsettings.json
