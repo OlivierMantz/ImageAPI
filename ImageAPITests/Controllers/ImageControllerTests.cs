@@ -28,20 +28,17 @@ namespace ImageAPITests.Controllers.Tests
             formFileMock.Setup(_ => _.OpenReadStream()).Returns(stream);
             formFileMock.Setup(_ => _.Length).Returns(stream.Length);
 
-            var files = new List<IFormFile>
-            {
-                formFileMock.Object
-            };
+            var file = formFileMock.Object;
 
             var someOptions = Options.Create(new AzureStorageConfig());
 
             var controller = new ImagesController(someOptions, new TestFileUploader(true));
 
             // Act
-            var result = await controller.Upload(files);
+            var result = await controller.Upload(file);
 
             // Assert
-            Assert.IsType<AcceptedAtActionResult>(result);
+            Assert.IsType<OkObjectResult>(result);
         }
 
         //[Fact()]
