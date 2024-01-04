@@ -6,6 +6,6 @@ namespace ImageAPI.Interfaces
 {
     public interface IFileUploader
     {
-        public Task<bool> UploadFile(IFormFile formFile, AzureStorageConfig storageConfig);
+        public Task<bool> UploadFile(IFormFile file, string guid, AzureStorageConfig storageConfig);
     }
 }

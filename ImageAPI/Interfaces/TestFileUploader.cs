@@ -7,7 +7,7 @@ namespace ImageAPI.Interfaces
     public class TestFileUploader : IFileUploader
     {
         private bool result;
-        public async Task<bool> UploadFile(IFormFile formFile, AzureStorageConfig storageConfig)
+        public async Task<bool> UploadFile(IFormFile file, string guid, AzureStorageConfig storageConfig)
         {
             return result;
         }

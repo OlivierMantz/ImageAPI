@@ -43,5 +43,25 @@ namespace ImageAPITests.Controllers.Tests
             // Assert
             Assert.IsType<AcceptedAtActionResult>(result);
         }
+
+        //[Fact()]
+        //public async Task GetThumbnails()
+        //{
+        //    // Arrange 
+        //    var someOptions = Options.Create(new AzureStorageConfig());
+
+        //    var controller = new ImagesController(someOptions, new TestFileUploader(true));
+
+        //    // Act
+        //    var result = await controller.GetThumbNails();
+
+        //    // Assert
+        //    Assert.IsType<AcceptedAtActionResult>(result);
+
+        //    //var okResult = Assert.IsType<OkObjectResult>(result);
+        //    //var thumbnailUrls = Assert.IsAssignableFrom<List<string>>(okResult.Value);
+
+
+        //}
     }
 }
