@@ -1,6 +1,8 @@
 
 using ImageAPI.Interfaces;
 using ImageAPI.Models;
+using ImageAPI;
+using ImageAPI.Service;
 
 namespace ImageAPI
 {
@@ -9,11 +11,13 @@ namespace ImageAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQSettings"));
+            builder.Services.AddSingleton<RabbitMQPublisher>();
 
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder.WithOrigins("http://localhost:5173")
+                    builder => builder.WithOrigins("http://localhost:5173", "https://localhost:5173")
                         .AllowAnyHeader()
                         .AllowAnyMethod());
             });
@@ -35,7 +39,7 @@ namespace ImageAPI
                 app.UseSwaggerUI();
             }
             app.UseCors("AllowSpecificOrigin");
-            
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
@@ -44,10 +48,6 @@ namespace ImageAPI
             app.MapControllers();
 
             app.Run();
-        }
-        public class RabbitMQSettings
-        {
-            public string Hostname { get; set; }
         }
     }
 }
